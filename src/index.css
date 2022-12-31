@@ -13,6 +13,11 @@ body {
   background-color: rgb(236, 236, 238);
   overflow: hidden;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background-image: url("../public/bodywallpaper.jpg");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 .container {

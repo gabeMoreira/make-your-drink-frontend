@@ -1,19 +1,63 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { ToastContainer, Toast } from "react-toastify";
+import { ToastContainer, Toast, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios'
 
 export default function Register() {
+    const [values, setValues] = useState({
+        email:"",
+        name: "",
+        password:""
+    })
+
+    const messageNotification = (message) => {
+        toast(message);
+    };
+
+    const errorGenerator = (error) => {
+        toast.error(error.response.data.data[0].message)
+    };
+
+    const handlerSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const { data } = await axios.post("http://localhost:4000/users", {
+                ...values
+            });
+            console.log(data)
+            messageNotification(data.message);
+            
+        } catch(err) {
+            errorGenerator(err)
+        }
+    }
+
   return(
     <div className="container">
         <h2>Register Account</h2>
-        <form>
+        <form onSubmit={(e) => handlerSubmit(e)}>
             <div>
                 <label htmlFor="email">Email</label>
-                <input type="email" name="email" placeholder="Email" />
+                <input type="email" name="email" placeholder="Email"
+                 onChange={(e) =>
+                    setValues({...values, [e.target.name]: e.target.value})
+                }/>
+            </div>
+            <div>
+                <label>Name</label>
+                <input name="name" placeholder="Name"
+                 onChange={(e) =>
+                    setValues({...values, [e.target.name]: e.target.value})
+                }/>
             </div>
             <div>
                 <label htmlFor="password">Password</label>
-                <input type="password" name="password" placeholder="Password" />
+                <input type="password" name="password" placeholder="Password"
+                 onChange={(e) =>
+                    setValues({...values, [e.target.name]: e.target.value})
+                }/>
             </div>
             <button type="submit">Submit</button>
             <span>
