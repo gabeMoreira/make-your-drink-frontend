@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios'
+
 
 export default function Register() {
     const navigate = useNavigate()
@@ -17,23 +17,26 @@ export default function Register() {
     };
 
     const errorGenerator = (error) => {
-        toast.error(error.response.data.data[0].message)
+        toast.error(error.data[0].message)
     };
 
     const handlerSubmit = async (e) => {
         e.preventDefault();
-
-        try {
-            const { data } = await axios.post("http://localhost:4000/users", {
-                ...values
-            })
+        const body = { ...values };
+        const response = await fetch('http://localhost:4000/users', {
+            method: 'post',
+            body: JSON.stringify(body),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json()
+        if (response.status === 201) {
+            console.log('AQUI: ', data)
             messageNotification(data.message);
             setTimeout(() => {
                 navigate("/login")
-            }, 1000)
-
-        } catch (err) {
-            errorGenerator(err)
+            }, 2000)
+        } else {
+            errorGenerator(data)
         }
     }
 
